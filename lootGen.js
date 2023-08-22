@@ -11,7 +11,7 @@
 
 //Argument Validation
 if(!args[0] || !args[1] || !args[2] || !args[3]) {
-    ui.notifications.error("This macro depends on arguments (/amacro 'Macro Name' size rarity type divider luck), which could not be found.");
+    ui.notifications.error("This macro depends on arguments (/amacro Loot [size] [rarity] [type] [divider] [luck]), which could not be found.");
     return;
 }
 
@@ -25,8 +25,8 @@ if(args[1] != "Common" && args[1] != "Uncommon" && args[1] != "Rare" && args[1] 
     return;
 }
 
-if(args[2] != "Residential" && args[2] != "Commercial" && args[2] != "Industrial" && args[2] != "Medical" && args[2] != "Military/Police" && args[2] != "Hideout" && args[2] != "Mutant" && args[2] != "Vault" && args[2] != "Public") {
-    ui.notifications.error("Argument 3 must be Residential, Commercial, Industrial, Medical, Military/Police, Hideout, Mutant, Vault, or Public");
+if(args[2] != "Residential" && args[2] != "Commercial" && args[2] != "Industrial" && args[2] != "Medical" && args[2] != "Military" && args[2] != "Hideout" && args[2] != "Mutant" && args[2] != "Vault" && args[2] != "Public") {
+    ui.notifications.error("Argument 3 must be Residential, Commercial, Industrial, Medical, Military, Hideout, Mutant, Vault, or Public");
     return;
 }
 
@@ -35,7 +35,7 @@ if(args[3] > 3 || args[3] < 1) {
     return;
 }
 
-if(args[4] > 1 || args[4] < 0) {
+if(!(args[4] == 1 || args[4] == 0)) {
     ui.notifications.error("Argument 4 must be 0 or 1");
     return;
 }
@@ -226,8 +226,8 @@ if(args[2] == "Residential") {
             }
         }
     }
-} else if(args[2] == "Military/Police") {
-    console.log("In Military/Police")
+} else if(args[2] == "Military") {
+    console.log("In Military")
     amm = 1 + getRandomInt(1)
     armor = getRandomInt(1)
     cloth = getRandomInt(1)
@@ -465,7 +465,9 @@ melee = lootDivisor(melee)
 ranged = lootDivisor(ranged)
 explo = lootDivisor(explo)
 odd = lootDivisor(odd)
+console.log("In junk " + junk)
 junk = lootDivisor(junk)
+console.log("In junk2 " + junk)
 
 //These tables do not exist due to no items with that rarity. None will be looted.
 if(args[1] == "Common") {
@@ -529,7 +531,12 @@ function getRandomInt(max) {
 
 //Divide loot total by loot divisor, multiply by 1.5 if a luck point was spent, and round to the nearest int.
 function lootDivisor(loot) {
-    return Math.round((loot / args[3]) * (args[4] * 1.5))
+    if(args[4] == 1) {
+        return Math.round((loot / args[3]) * 1.5)
+    } else {
+        return Math.round((loot / args[3]))
+    }
+
 }
 
 //Populating message by rolling all necessary tables.
@@ -708,7 +715,7 @@ async function rollAndAddItem(tableName, modifier, type){
             if(args[4] == 1) {mod_chance = mod_chance - 10}
             if(mod_chance < 30) {
                 let mod_num = getRandomInt(99)
-                if(args[2] == "Military/Police" || args[2] == "Hideout" || args[2] == "Mutant" || args[4] == 1) {
+                if(args[2] == "Military" || args[2] == "Hideout" || args[2] == "Mutant" || args[4] == 1) {
                     mod_num = mod_num + 30
                 }
                 mod_num = Math.round(mod_num / 30)
